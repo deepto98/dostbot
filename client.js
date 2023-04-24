@@ -50,13 +50,30 @@ const Config = new Configuration({
 const openai = new OpenAIApi(Config);
 
 client.on("message", (message) => {
-  console.log(message.body);
-  runCompletion(message.body).then((result) => message.reply(result));
-});
+  let body = message.body;
+  // console.log(body);
+  console.log(body.startsWith("!dost"));
 
-client.on("message", (message) => {
-  if (message.body === "!ping") {
-    message.reply("pong");
+  if (body.startsWith("!dost")) {
+    var array = body.split(" ");
+    console.log(array);
+    rootCmd = array[1];
+
+    switch (rootCmd) {
+      case "gpt":
+        message.reply("Fetching ChatGPT reply");
+
+        var gptPrompt = array.slice(2).join(' ');
+        console.log("gptPrompt");
+        console.log(gptPrompt);
+
+        runCompletion(gptPrompt).then((result) => message.reply(result));
+
+        break;
+
+      default:
+      // code block
+    }
   }
 });
 
@@ -64,7 +81,7 @@ async function runCompletion(message) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: message,
-    max_tokens: 200,
+    max_tokens: 2000,
   });
   return completion.data.choices[0].text;
 }
