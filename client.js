@@ -18,9 +18,9 @@ const myGroupName = "Murphy's Law";
 
 const client = new Client({
   authStrategy: new LocalAuth(),
-  // puppeteer: {
-  //   executablePath: "/usr/bin/google-chrome-stable",
-  // },
+  puppeteer: {
+    executablePath: "/usr/bin/google-chrome-stable",
+  },
 });
 
 client.on("qr", (qr) => {
@@ -78,14 +78,19 @@ client.on("message_create", (message) => {
       case "song":
         (async () => {
           console.log("calling");
+          var chatId = (await message.getChat()).id._serialized;
+          console.log(chatId);
+          // var contact = (await message.getContact()).getChat.toString;
+          var url =
+            "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";
 
-          const media = await MessageMedia.fromUrl(
-            "https://unsplash.com/photos/wdVwF3Ese4o/download?ixid=MnwxMjA3fDF8MXxhbGx8MXx8fHx8fDJ8fDE2ODIzNzAwNjI&force=true&w=640",
-            {
-              unsafeMime: true,
-            }
-          );
-            client.sendMessage(media);
+          const media = await MessageMedia.fromUrl(url, {
+            unsafeMime: true,
+          });
+
+          // // media.mimetype = "image/png";
+          // media.filename = "CustomImageName.png";
+          client.sendMessage(chatId, url);
 
           // let file =
           // "https://unsplash.com/photos/wdVwF3Ese4o/download?ixid=MnwxMjA3fDF8MXxhbGx8MXx8fHx8fDJ8fDE2ODIzNzAwNjI&force=true&w=640",
