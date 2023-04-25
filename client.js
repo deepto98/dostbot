@@ -29,10 +29,17 @@ client.on("qr", (qr) => {
 
 client.on("ready", () => {
   console.log("Client is ready!");
-  // client.getChats().then((chats) => {
-  //   myGroup = chats.find((chat) => chat.name === myGroupName);
-  //   console.log(myGroup);
-  //   client.sendMessage(myGroup.id._serialized, "badia haal hai");
+  // (async () => {
+  // client.getChats().then(async (chats) => {
+  //   var myGroup = chats.find((chat) => chat.name === myGroupName);
+  //   // console.log(myGroup);
+  //   var allMessages = [];
+  //   // var chat = await message.getChat();
+  //   var messages = await myGroup.fetchMessages({ limit: Number.MAX_VALUE });
+
+  //   messages.forEach((e) => allMessages.push(e.body));
+  //   console.log("allMessages");
+  //   console.log(allMessages);
   // });
 });
 
@@ -55,7 +62,7 @@ const openai = new OpenAIApi(Config);
 client.on("message_create", (message) => {
   let body = message.body;
   // console.log(body);
-  console.log(body.startsWith("!dost"));
+  // console.log(body.startsWith("!dost"));
 
   if (body.startsWith("!dost")) {
     var array = body.split(" ");
@@ -63,6 +70,41 @@ client.on("message_create", (message) => {
     rootCmd = array[1];
 
     switch (rootCmd) {
+      case "history":
+        (async () => {
+          var allMessages = [];
+          var chat = await message.getChat();
+          // await new Promise((resolve) => setTimeout(resolve, 20000));
+
+          // console.log(chat);
+
+          // var messages = await chat.fetchMessages({ limit: 5 });
+          var messages = await chat.fetchMessages({ limit: Number.MAX_VALUE });
+
+          messages.forEach((e) => allMessages.push(e.body));
+          console.log("allMessages");
+
+          console.log(allMessages[0]);
+          console.log(allMessages[1]);
+          console.log(allMessages[allMessages.length - 1]);
+
+          console.log(allMessages.length);
+        })();
+
+        break;
+
+      case "meme":
+        message.reply("Fetching ChatGPT reply");
+
+        var gptPrompt = array.slice(2).join(" ");
+        console.log("gptPrompt");
+        console.log(gptPrompt);
+
+        runCompletion(gptPrompt).then((result) =>
+          message.reply(result.trimStart())
+        );
+
+        break;
       case "gpt":
         message.reply("Fetching ChatGPT reply");
 
