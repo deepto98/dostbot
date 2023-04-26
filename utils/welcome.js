@@ -1,7 +1,4 @@
-const {
-  Client,
-  Message,
-} = require("whatsapp-web.js");
+const { Client, Message } = require("whatsapp-web.js");
 
 /**
  * @param {Client} client The date
@@ -22,3 +19,4 @@ function displayMenu(client, message) {
 module.exports = {
   displayMenu,
 };
+
