@@ -1,4 +1,5 @@
 const fs = require("fs");
+var welcome = require("./utils/welcome");
 
 const { Client, MessageMedia, LocalAuth, Buttons } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
@@ -77,30 +78,7 @@ client.on("message_create", (message) => {
     switch (rootCmd) {
       case "":
       case "help":
-        console.log("Menu");
-        let button = new Buttons(
-          "Button body",
-          [{ body: "Aceptar" }, { body: "rechazar" }],
-          "title",
-          "footer"
-        );
-        try {
-          (async () => {
-            // console.log("calling");
-            var chatId = (await message.getChat()).id._serialized;
-            // console.log(chatId);
-            client.sendMessage(chatId, button);
-            message.reply(button)
-          })();
-
-          // message.reply(button);
-        } catch (error) {
-          console.log("Error:");
-
-          console.log(error.message);
-          console.log("Error end_________");
-          return "⚠️ Request Failed ⚠️";
-        }
+        welcome.displayMenu(client, message);
         break;
       case "history":
         (async () => {
