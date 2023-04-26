@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const { Client, MessageMedia, LocalAuth } = require("whatsapp-web.js");
+const { Client, MessageMedia, LocalAuth, Buttons } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const { Configuration, OpenAIApi } = require("openai");
 require("dotenv").config();
@@ -18,9 +18,9 @@ const myGroupName = "Murphy's Law";
 
 const client = new Client({
   authStrategy: new LocalAuth(),
-  puppeteer: {
-    executablePath: "/usr/bin/google-chrome-stable",
-  },
+  // puppeteer: {
+  //   executablePath: "/usr/bin/google-chrome-stable",
+  // },
 });
 
 client.on("qr", (qr) => {
@@ -73,10 +73,34 @@ client.on("message_create", (message) => {
     typeof array[1] != "undefined" ? (rootCmd = array[1]) : false;
     console.log(rootCmd);
 
+    //Commands
     switch (rootCmd) {
       case "":
       case "help":
         console.log("Menu");
+        let button = new Buttons(
+          "Button body",
+          [{ body: "Aceptar" }, { body: "rechazar" }],
+          "title",
+          "footer"
+        );
+        try {
+          (async () => {
+            // console.log("calling");
+            var chatId = (await message.getChat()).id._serialized;
+            // console.log(chatId);
+            client.sendMessage(chatId, button);
+            message.reply(button)
+          })();
+
+          // message.reply(button);
+        } catch (error) {
+          console.log("Error:");
+
+          console.log(error.message);
+          console.log("Error end_________");
+          return "⚠️ Request Failed ⚠️";
+        }
         break;
       case "history":
         (async () => {
@@ -211,13 +235,23 @@ async function runCompletion(message) {
 }
 
 async function createImage(message) {
-  const completion = await openai.createImage({
-    n: 1,
-    prompt: message,
-    size: "1024x1024",
-  });
-  var imgUrl = completion.data.data[0].url;
-  console.log(imgUrl);
+  try {
+    const completion = await openai.createImage({
+      n: 1,
+      prompt: message,
+      size: "1024x1024",
+    });
+    var imgUrl = completion.data.data[0].url;
+    console.log(imgUrl);
+    // ...
+  } catch (error) {
+    console.log("Error:");
+
+    console.log(error.message);
+    console.log("Error end_________");
+    return "⚠️ Request Failed ⚠️";
+  }
+
   var media = await MessageMedia.fromUrl(imgUrl, {
     unsafeMime: true,
   });
