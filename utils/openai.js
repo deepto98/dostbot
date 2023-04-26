@@ -16,7 +16,7 @@ const openAIApi = new OpenAIApi(Config);
  * @param {String} gptPrompt The string
  */
 function fetchChatGPTReply(message, gptPrompt) {
-  message.reply("Fetching ChatGPT reply");
+  message.reply("🤔🤔🤔 ChatGPT is thinking 🤔🤔🤔");
   try {
     createTextCompletion(gptPrompt).then((result) =>
       message.reply(result.trimStart())
@@ -33,7 +33,7 @@ function fetchChatGPTReply(message, gptPrompt) {
  * @param {String} gptPrompt The string
  */
 function fetchDalleReply(message, gptPrompt) {
-  message.reply("Fetching DallE image");
+  message.reply("🎨🎨🎨 Dall.E is painting 🎨🎨🎨");
   try {
     createImage(gptPrompt).then((image) => message.reply(image));
   } catch (error) {
