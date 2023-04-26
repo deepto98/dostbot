@@ -60,16 +60,24 @@ const Config = new Configuration({
 const openai = new OpenAIApi(Config);
 
 client.on("message_create", (message) => {
+  var chatId = "";
+  (async () => {
+    // console.log("calling");
+    chatId = (await message.getChat()).id._serialized;
+  })();
   let body = message.body;
-  // console.log(body);
-  // console.log(body.startsWith("!dost"));
 
   if (body.startsWith("!dost")) {
     var array = body.split(" ");
-    console.log(array);
-    rootCmd = array[1];
+    var rootCmd = "";
+    typeof array[1] != "undefined" ? (rootCmd = array[1]) : false;
+    console.log(rootCmd);
 
     switch (rootCmd) {
+      case "":
+      case "help":
+        console.log("Menu");
+        break;
       case "history":
         (async () => {
           var allMessages = [];
@@ -114,6 +122,21 @@ client.on("message_create", (message) => {
 
         runCompletion(gptPrompt).then((result) =>
           message.reply(result.trimStart())
+        );
+
+        break;
+      case "dalle":
+        message.reply("Fetching DallE image");
+
+        var gptPrompt = array.slice(2).join(" ");
+        console.log("gptPrompt");
+        console.log(gptPrompt);
+
+        createImage(gptPrompt).then(
+          (result) =>
+            // message.reply(result.trimStart())
+            message.reply(result)
+          // client.sendMessage(chatId, result)
         );
 
         break;
@@ -185,4 +208,18 @@ async function runCompletion(message) {
   var result = completion.data.choices[0].text;
   console.log(result);
   return result;
+}
+
+async function createImage(message) {
+  const completion = await openai.createImage({
+    n: 1,
+    prompt: message,
+    size: "1024x1024",
+  });
+  var imgUrl = completion.data.data[0].url;
+  console.log(imgUrl);
+  var media = await MessageMedia.fromUrl(imgUrl, {
+    unsafeMime: true,
+  });
+  return media;
 }
