@@ -1,6 +1,7 @@
 const fs = require("fs");
 var welcome = require("./utils/welcome");
 var openai = require("./utils/openai");
+var mentions = require("./utils/mentions");
 
 const { Client, MessageMedia, LocalAuth, Buttons } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
@@ -37,6 +38,9 @@ client.on("message_create", (message) => {
       case "help":
         welcome.displayMenu(client, message);
         break;
+      case "tagall":
+        mentions.tagAllGroupMembers(client, message);
+        break;
       case "gpt":
         var gptPrompt = array.slice(2).join(" ");
         openai.fetchChatGPTReply(message, gptPrompt);
@@ -45,6 +49,8 @@ client.on("message_create", (message) => {
         var gptPrompt = array.slice(2).join(" ");
         openai.fetchDalleReply(message, gptPrompt);
         break;
+
+      // Trying to do something like most used words in a group, analytics etc, but only a fraction of messages are being fetched by this
       case "history":
         (async () => {
           var allMessages = [];
@@ -63,18 +69,6 @@ client.on("message_create", (message) => {
 
         break;
 
-      case "meme":
-        message.reply("Fetching ChatGPT reply");
-
-        var gptPrompt = array.slice(2).join(" ");
-        console.log("gptPrompt");
-        console.log(gptPrompt);
-
-        runCompletion(gptPrompt).then((result) =>
-          message.reply(result.trimStart())
-        );
-
-        break;
 
       case "song":
         (async () => {
