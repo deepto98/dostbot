@@ -5,6 +5,7 @@ require("dotenv").config();
 
 module.exports = {
   createReminder,
+  startAgenda,
 };
 
 const dbUri = process.env.DOSTBOST_DB;
@@ -30,11 +31,16 @@ ${task}
 /**
  * @param {Message} message The string
  */
+
+async function startAgenda() {
+  await agenda.start();
+}
 async function createReminder(message, interval, task) {
   var chatId = (await message.getChat()).id._serialized;
   var messageId = message.id.id;
 
-  await agenda.start();
+  //   Handle this elsewhere, coz server shutdown affects this
+  //   await agenda.start();
 
   await agenda.schedule(interval, "send_reminder", {
     chatId: chatId,
