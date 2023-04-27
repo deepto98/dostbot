@@ -7,7 +7,10 @@ var scheduler = require("./utils/scheduler");
 const { Client, MessageMedia, LocalAuth, Buttons } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 
-const client = new Client({
+/**
+ * @param {Client} client The string
+ */
+global.client = new Client({
   authStrategy: new LocalAuth(),
   // puppeteer: {
   //   executablePath: "/usr/bin/google-chrome-stable",

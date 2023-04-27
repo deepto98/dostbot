@@ -16,14 +16,16 @@ const agenda = new Agenda({ db: { address: dbUri } });
  * @param {Message} message The string
  */
 agenda.define("send_reminder", async (job) => {
-  var { message } = job.attrs.data;
-  console.log("agenda msg");
-  console.log(message);
-  var reconMessage = Object.assign(new Message(), message);
-  console.log("recon msg");
-  console.log(reconMessage);
-  reconMessage.reply("Reminder");
-  message.reply("Reminder");
+  var { chatId,messageId } = job.attrs.data;
+//   console.log("agenda msg");
+//   console.log(message);
+//   var reconMessage = Object.assign(new Message(), message);
+//   console.log("recon msg");
+//   console.log(reconMessage);
+  //   reconMessage.reply("Reminder");
+
+  client.sendMessage(chatId, "Reminder");
+//   message.reply("Reminder");
 });
 
 /**
@@ -31,13 +33,19 @@ agenda.define("send_reminder", async (job) => {
  */
 async function createReminder(message) {
   console.log("org msg");
-  console.log(message);
-  // IIFE to give access to async/await
-  await agenda.start();
+  // IIFE to give access to async/
+
+  var chatId = (await message.getChat()).id._serialized;
+  var messageId = message.id.id;
+//   console.log(message);
+  console.log(chatId);
+  console.log(messageId);
+
+    await agenda.start();
 
   // await agenda.every('3 minutes', 'delete old users');
-  agenda.schedule("in 20 seconds", "send_reminder", { message: message });
-
-  // Alternatively, you could also do:
-  // await agenda.every('*/3 * * * *', 'delete old users');
+    agenda.schedule("in 20 seconds", "send_reminder", {
+      chatId: chatId,
+      messageId: messageId,
+    });
 }
