@@ -1,6 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { Message, MessageMedia } = require("whatsapp-web.js");
 require("dotenv").config();
+
 module.exports = {
   fetchChatGPTReply,
   fetchDalleReply,

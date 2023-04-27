@@ -2,6 +2,7 @@ const fs = require("fs");
 var welcome = require("./utils/welcome");
 var openai = require("./utils/openai");
 var mentions = require("./utils/mentions");
+var scheduler = require("./utils/scheduler");
 
 const { Client, MessageMedia, LocalAuth, Buttons } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
@@ -38,6 +39,9 @@ client.on("message_create", (message) => {
       case "help":
         welcome.displayMenu(client, message);
         break;
+      case "remind":
+        scheduler.createReminder(message);
+        break;
       case "tagall":
         mentions.tagAllGroupMembers(client, message);
         break;
@@ -68,7 +72,6 @@ client.on("message_create", (message) => {
         })();
 
         break;
-
 
       case "song":
         (async () => {
