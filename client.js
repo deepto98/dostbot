@@ -42,8 +42,10 @@ client.on("message_create", (message) => {
       case "help":
         welcome.displayMenu(client, message);
         break;
-      case "remind":
-        scheduler.createReminder(message);
+      case "remindme":
+        var interval = array.slice(2, 5).join(" ");
+        var task = array.slice(5).join(" ");
+        scheduler.createReminder(message, interval, task);
         break;
       case "tagall":
         mentions.tagAllGroupMembers(client, message);
