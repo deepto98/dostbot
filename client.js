@@ -3,6 +3,7 @@ var welcome = require("./utils/welcome");
 var openai = require("./utils/openai");
 var mentions = require("./utils/mentions");
 var scheduler = require("./utils/scheduler");
+var reddit = require("./utils/reddit");
 
 const { Client, MessageMedia, LocalAuth, Buttons } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
@@ -59,6 +60,8 @@ client.on("message_create", (message) => {
         var gptPrompt = array.slice(2).join(" ");
         openai.fetchDalleReply(message, gptPrompt);
         break;
+      case "meme":
+        reddit.fetchHotPostsFromSubreddit("meme");
 
       // Trying to do something like most used words in a group, analytics etc, but only a fraction of messages are being fetched by this
       case "history":

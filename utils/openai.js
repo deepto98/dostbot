@@ -17,10 +17,10 @@ const openAIApi = new OpenAIApi(Config);
  * @param {String} gptPrompt The string
  */
 function fetchChatGPTReply(message, gptPrompt) {
-  message.reply("🤔🤔🤔 ChatGPT is thinking 🤔🤔🤔");
+  message.reply("🤖 *ChatGPT is Thinking* 🤔");
   try {
     createTextCompletion(gptPrompt).then((result) =>
-      message.reply(result.trimStart())
+      message.reply("*🤖 ChatGPT says 🗣*\n" + result.trimStart())
     );
   } catch (error) {
     console.log("Error:");
@@ -34,9 +34,11 @@ function fetchChatGPTReply(message, gptPrompt) {
  * @param {String} gptPrompt The string
  */
 function fetchDalleReply(message, gptPrompt) {
-  message.reply("🎨🎨🎨 Dall.E is painting 🎨🎨🎨");
+  message.reply("🤖 *DALL·E is Painting* 🎨");
   try {
-    createImage(gptPrompt).then((image) => message.reply(image));
+    createImage(gptPrompt).then((image) =>
+      message.reply(image, null, { caption: gptPrompt + " *by 🤖 DALL·E 🤖*" })
+    );
   } catch (error) {
     console.log("Error:");
     console.log(error.message);
